@@ -1,5 +1,5 @@
-import dummy from "./res/dummy.json";
-import dummyWithoutParent from "./res/dummyWithoutParent.json";
+import dummy from "../input/dummy.json";
+import dummyWithoutParent from "../input/dummyWithoutParent.json";
 import { EventEmitter } from "node:events";
 import * as fs from "fs-extra";
 import * as path from "path";
