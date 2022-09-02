@@ -1,10 +1,10 @@
 # Introduction
 
-level과 department, parent department를 기준으로 작성된 데이터를 Tree Structure로 파싱하는 프로그램입니다.
+This tool allows you to parse data with level, department, and parent department into a tree structure.
 
 # Usage
 
-Try to insert data called `dummy.json` as follows. the data is placed in the `src/res` directory.
+Try to insert data called `dummy.json` as follows. the data has to be placed in the `input` directory.
 
 ```json
 {
