@@ -1,11 +1,16 @@
 import dummy from "./res/dummy.json";
 import dummyWithoutParent from "./res/dummyWithoutParent.json";
 import { EventEmitter } from "node:events";
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as path from "path";
 import { uuid } from "uuidv4";
 
 type Dummy = typeof dummy;
+type RawTreeNodes = Dummy["data"];
+
+namespace ProcessInformation {
+  export const OUTPUT_FOLDER = path.join(__dirname, "..", "output");
+}
 
 class App extends EventEmitter {
   constructor() {
@@ -14,7 +19,14 @@ class App extends EventEmitter {
   }
 
   start() {
-    this.on("ready", this.parseJson);
+    this.clear();
+    this.on("export", this.parseJson);
+  }
+
+  clear() {
+    if (fs.pathExistsSync(ProcessInformation.OUTPUT_FOLDER)) {
+      fs.removeSync(ProcessInformation.OUTPUT_FOLDER);
+    }
   }
 
   parseJson(dummy: Dummy) {
@@ -22,25 +34,29 @@ class App extends EventEmitter {
 
     const tree = this.makeTree(data);
 
-    const OUTPUT = path.join(__dirname, "..", "output");
-
-    if (!fs.existsSync(OUTPUT)) {
-      fs.mkdirSync(OUTPUT);
+    if (!fs.existsSync(ProcessInformation.OUTPUT_FOLDER)) {
+      fs.mkdirSync(ProcessInformation.OUTPUT_FOLDER);
     }
 
     fs.writeFileSync(
-      path.join(OUTPUT, `tree-${uuid().slice(0, 8)}.json`),
+      path.join(
+        ProcessInformation.OUTPUT_FOLDER,
+        `tree-${uuid().slice(0, 8)}.json`
+      ),
       JSON.stringify(tree, null, 4)
     );
   }
 
-  makeTree(data: Dummy["data"]) {
+  makeTree(data: RawTreeNodes) {
     const tree = [];
     const map = new Map();
     data.forEach((node) =>
       map.set(node.departmentName, { ...node, children: [] })
     );
-    for (const node of map.values()) {
+
+    const collection: IterableIterator<RawTreeNodes[number]> = map.values();
+
+    for (const node of collection) {
       if (node.parentDepartment) {
         map.get(node.parentDepartment).children.push(node);
       } else {
@@ -52,5 +68,5 @@ class App extends EventEmitter {
 }
 
 const app = new App();
-app.emit("ready", dummy);
-app.emit("ready", dummyWithoutParent);
+app.emit("export", dummy);
+app.emit("export", dummyWithoutParent);

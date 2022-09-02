@@ -1,10 +1,10 @@
 # Introduction
 
-레벨과 부서, 상위 부서를 기준으로 작성된 데이터를 트리 구조로 파싱하는 프로그램입니다.
+level과 department, parent department를 기준으로 작성된 데이터를 Tree Structure로 파싱하는 프로그램입니다.
 
 # Usage
 
-다음과 같이 더미 데이터를 삽입합니다.
+Try to insert data called `dummy.json` as follows. the data is placed in the `src/res` directory.
 
 ```json
 {
