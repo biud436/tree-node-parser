@@ -1,7 +1,9 @@
 import dummy from "./res/dummy.json";
+import dummyWithoutParent from "./res/dummyWithoutParent.json";
 import { EventEmitter } from "node:events";
 import * as fs from "fs";
 import * as path from "path";
+import { uuid } from "uuidv4";
 
 type Dummy = typeof dummy;
 
@@ -27,7 +29,7 @@ class App extends EventEmitter {
     }
 
     fs.writeFileSync(
-      path.join(OUTPUT, "tree.json"),
+      path.join(OUTPUT, `tree-${uuid().slice(0, 8)}.json`),
       JSON.stringify(tree, null, 4)
     );
   }
@@ -51,3 +53,4 @@ class App extends EventEmitter {
 
 const app = new App();
 app.emit("ready", dummy);
+app.emit("ready", dummyWithoutParent);
